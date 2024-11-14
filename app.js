@@ -1,9 +1,31 @@
 import cors from 'cors';
 import express from 'express';
+import dotenv from 'dotenv';
 import * as routes from './routes/index.js';
+import os from "os";
 
 const app = express();
 const PORT = 8080;
+
+dotenv.config();
+
+//* Function to get the local machine's IP address
+const getLocalIPAddress = () => {
+  const interfaces = os.networkInterfaces();
+  for (const interfaceName in interfaces) {
+    const addresses = interfaces[interfaceName];
+    for (const addr of addresses) {
+      // Check for IPv4 and internal=false, which excludes localhost
+      if (addr.family === 'IPv4' && !addr.internal) {
+        return addr.address;
+      }
+    }
+  }
+  return 'localhost';
+};
+
+const localIP = getLocalIPAddress();
+
 
 //* Enable CORS for all routes
 app.use(cors()); // Use CORS middleware
@@ -110,5 +132,10 @@ app.use((err, req, res, next) => {
 
 // Start the server
 app.listen(PORT, () => {
-	console.log(`Server is running at http://localhost:${PORT}/`);
+	console.log(`Server is running at:\n- \x1b[1m\x1b[4m\x1b[1m\x1b[34mhttp://localhost:${PORT}/\x1b[0m\n- \x1b[1m\x1b[4m\x1b[1m\x1b[34mhttp://${process.env.MYSQL_HOST}:${PORT}/\x1b[0m`);
+	console.log('\nTry to navigate to \x1b[1m\x1b[34mmeats/\x1b[0m endpoint and check if the server returns valid JSON response, if it returns an error 500, check your MySQL server if it\'s open')
+	console.log(`\n\x1b[91mIMPORTANT:\x1b[0m This is the URL you put on .env > EXPO_PUBLIC_SERVER_URL variable, on the app project: \x1b[1m\x1b[4m\x1b[1m\x1b[34mhttp://${localIP}:${PORT}/\x1b[0m`)
+  
+
+
 });

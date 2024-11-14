@@ -21,8 +21,6 @@ export const POOL = mysql
 	})
 	.promise(); // Use promise-based API for async/await support
 
-console.log( process.env.MYSQL_HOST, process.env.MYSQL_USER,  process.env.MYSQL_PASSWORD, process.env.MYSQL_DATABASE)
-
 /**
  * Capitalizes the first letter of each word in a given string.
  *
